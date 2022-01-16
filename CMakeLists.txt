@@ -27,22 +27,21 @@ find_package(GeographicLib REQUIRED)
 find_package(PugiXML REQUIRED)
 
 include_directories(
-        lanelet2_core/include
-        lanelet2_io/include
-        lanelet2_projection/include
-        lanelet2_routing/include
-        lanelet2_traffic_rules/include
-        lanelet2_python/include
         ${Boost_INCLUDE_DIRS}
         ${PYTHON_INCLUDE_DIRS}
         ${EIGEN3_INCLUDE_DIR}
         ${GeographicLib_INCLUDE_DIRS}
-        ${PugiXML_INCLUDE_DIRS}
-)
+        ${PugiXML_INCLUDE_DIRS})
 
-
-include_directories(lanelet2_core/include lanelet2_io/include lanelet2_projection/include
-        lanelet2_traffic_rules/include lanelet2_routing/include lanelet2_validation/include lanelet2_matching/include)
+include_directories(
+        lanelet2_core/include
+        lanelet2_io/include
+        lanelet2_projection/include
+        lanelet2_traffic_rules/include
+        lanelet2_routing/include
+        lanelet2_validation/include
+        lanelet2_matching/include
+        lanelet2_python/include)
 
 file(GLOB CORESRCS lanelet2_core/src/*.cpp)
 add_library(lanelet2_core SHARED ${CORESRCS})
