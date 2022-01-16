@@ -40,38 +40,88 @@ include_directories(
         ${PugiXML_INCLUDE_DIRS}
 )
 
-set(MODUELS core io projection routing traffic_rules geometry)
+#add_subdirectory(lanelet2_core)
+#add_subdirectory(lanelet2_io)
+#add_subdirectory(lanelet2_projection)
+#add_subdirectory(lanelet2_traffic_rules)
+#add_subdirectory(lanelet2_routing)
+#add_subdirectory(lanelet2_validation)
+#add_subdirectory(lanelet2_examples)
+#add_subdirectory(lanelet2_python)
+#add_subdirectory(lanelet2_maps)
+#add_subdirectory(lanelet2_matching)
 
-set(LINKED_LIBRARIES "")
-# build the c++ libraries first
-foreach(SUBMODULE ${MODUELS})
-    if (NOT SUBMODULE STREQUAL "geometry")
-        set(LIBRARY_NAME ${PROJECT_NAME}_${SUBMODULE})
-        set(SRCS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_${SUBMODULE}/src)
-        file(GLOB ${SUBMODULE}_SRC ${SRCS_DIR}/*.cpp)
-        add_library(${LIBRARY_NAME} SHARED
-                ${${SUBMODULE}_SRC}
-                )
-        target_include_directories(${LIBRARY_NAME}
-                PUBLIC   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
-                PRIVATE  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_${SUBMODULE}/include/${PROJECT_NAME}_${SUBMODULE}>)
-        target_link_libraries(${LIBRARY_NAME}
-                ${Boost_LIBRARIES}
-                ${PYTHON_LIBRARY}
-                ${GeographicLib_LIBRARIES}
-                ${PugiXML_LIBRARIES}
-                )
-        list(APPEND LINKED_LIBRARIES ${LIBRARY_NAME})
-        install(TARGETS ${LIBRARY_NAME}
-                ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-                LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-                RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
-        install(DIRECTORY ${PROJECT_NAME}_${SUBMODULE}/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME})
-    endif()
-endforeach()
+include_directories(lanelet2_core/include lanelet2_io/include lanelet2_projection/include
+        lanelet2_traffic_rules/include lanelet2_routing/include lanelet2_validation/include lanelet2_matching/include)
+
+file(GLOB CORESRCS lanelet2_core/src/*.cpp)
+add_library(lanelet2_core SHARED ${CORESRCS})
+target_link_libraries(lanelet2_core
+        ${Boost_LIBRARIES}
+        ${PYTHON_LIBRARY}
+        ${GeographicLib_LIBRARIES}
+        ${PugiXML_LIBRARIES}
+        )
+
+file(GLOB IOSRCS lanelet2_io/src/*.cpp)
+add_library(lanelet2_io SHARED ${IOSRCS})
+target_link_libraries(lanelet2_io
+        ${Boost_LIBRARIES}
+        ${PYTHON_LIBRARY}
+        ${GeographicLib_LIBRARIES}
+        ${PugiXML_LIBRARIES}
+        lanelet2_core)
+
+file(GLOB PRJSRCS lanelet2_projection/src/*.cpp)
+add_library(lanelet2_projection SHARED ${PRJSRCS})
+target_link_libraries(lanelet2_projection
+        ${Boost_LIBRARIES}
+        ${PYTHON_LIBRARY}
+        ${GeographicLib_LIBRARIES}
+        ${PugiXML_LIBRARIES}
+        lanelet2_core)
+
+file(GLOB RULESSRCS lanelet2_traffic_rules/src/*.cpp)
+add_library(lanelet2_traffic_rules SHARED ${RULESSRCS})
+target_link_libraries(lanelet2_traffic_rules
+        ${Boost_LIBRARIES}
+        ${PYTHON_LIBRARY}
+        ${GeographicLib_LIBRARIES}
+        ${PugiXML_LIBRARIES}
+        lanelet2_core)
+
+file(GLOB ROUTESRCS lanelet2_routing/src/*.cpp)
+add_library(lanelet2_routing SHARED ${ROUTESRCS})
+target_link_libraries(lanelet2_routing
+        ${Boost_LIBRARIES}
+        ${PYTHON_LIBRARY}
+        ${GeographicLib_LIBRARIES}
+        ${PugiXML_LIBRARIES}
+        lanelet2_core
+        lanelet2_traffic_rules)
+
+file(GLOB VALISRCS lanelet2_validation/src/*.cpp)
+add_library(lanelet2_validation SHARED ${VALISRCS})
+target_link_libraries(lanelet2_validation
+        ${Boost_LIBRARIES}
+        ${PYTHON_LIBRARY}
+        ${GeographicLib_LIBRARIES}
+        ${PugiXML_LIBRARIES}
+        lanelet2_core lanelet2_io lanelet2_routing lanelet2_traffic_rules lanelet2_projection)
 
 
-# build each python api binding submodule
+file(GLOB MATCHSRCS lanelet2_matching/src/*.cpp)
+add_library(lanelet2_matching SHARED ${MATCHSRCS})
+target_link_libraries(lanelet2_matching
+        ${Boost_LIBRARIES}
+        ${PYTHON_LIBRARY}
+        ${GeographicLib_LIBRARIES}
+        ${PugiXML_LIBRARIES})
+target_include_directories(lanelet2_matching PRIVATE lanelet2_matching/include/lanelet2_matching)
+
+
+## build each python api binding submodule
+set(MODUELS core geometry io matching projection traffic_rules routing)
 foreach(SUBMODULE ${MODUELS})
     set(API_LIBRARY_NAME "${PROJECT_NAME}_${SUBMODULE}_pyapi")
     add_library(${API_LIBRARY_NAME} SHARED
@@ -81,6 +131,12 @@ foreach(SUBMODULE ${MODUELS})
     target_link_libraries(${API_LIBRARY_NAME}
             ${Boost_LIBRARIES}
             ${PYTHON_LIBRARY}
-            ${LINKED_LIBRARIES}
+            lanelet2_matching
+            lanelet2_projection
+            lanelet2_validation
+            lanelet2_routing
+            lanelet2_traffic_rules
+            lanelet2_io
+            lanelet2_core
             )
 endforeach()
