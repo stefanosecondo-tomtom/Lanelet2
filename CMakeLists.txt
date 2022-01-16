@@ -40,16 +40,6 @@ include_directories(
         ${PugiXML_INCLUDE_DIRS}
 )
 
-#add_subdirectory(lanelet2_core)
-#add_subdirectory(lanelet2_io)
-#add_subdirectory(lanelet2_projection)
-#add_subdirectory(lanelet2_traffic_rules)
-#add_subdirectory(lanelet2_routing)
-#add_subdirectory(lanelet2_validation)
-#add_subdirectory(lanelet2_examples)
-#add_subdirectory(lanelet2_python)
-#add_subdirectory(lanelet2_maps)
-#add_subdirectory(lanelet2_matching)
 
 include_directories(lanelet2_core/include lanelet2_io/include lanelet2_projection/include
         lanelet2_traffic_rules/include lanelet2_routing/include lanelet2_validation/include lanelet2_matching/include)
