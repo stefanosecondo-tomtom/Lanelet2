@@ -1,22 +1,16 @@
 cmake_minimum_required(VERSION 3.5.1)
-project(lanelet2)
-include(GNUInstallDirs)
 
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-backtrace-limit=0")
+project(lanelet2)
+
+set(CMAKE_CXX_STANDARD 17)
+
 # by setting this, we don't need to install the generated c++ library to /usr/local
 # LINKED_LIBRARIES will be installed by side with the python api binding libraries
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath='$ORIGIN'")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-option(USE_PYTHON3 "Use python 3 to build libraries." ON)
-if (USE_PYTHON3)
-    find_package(Boost REQUIRED COMPONENTS python serialization system filesystem)
-    find_package(PythonLibs 3.5 REQUIRED) # sets ${PYTHON_INCLUDE_DIRS}
-else()
-    find_package(Boost REQUIRED COMPONENTS python serialization system filesystem)
-    find_package(PythonLibs 2.7 REQUIRED) # sets ${PYTHON_INCLUDE_DIRS}
-endif()
+find_package(Boost REQUIRED COMPONENTS python serialization system filesystem)
+find_package(PythonLibs 3.5 REQUIRED) # sets ${PYTHON_INCLUDE_DIRS}
 find_package(Eigen3 QUIET)
 if(NOT EIGEN3_FOUND)
     find_package(PkgConfig REQUIRED)
@@ -24,7 +18,7 @@ if(NOT EIGEN3_FOUND)
     set(EIGEN3_INCLUDE_DIR ${EIGEN3_INCLUDE_DIRS})
 endif()
 find_package(GeographicLib REQUIRED)
-find_package(PugiXML REQUIRED)
+find_package(pugixml REQUIRED)
 
 include_directories(
         ${Boost_INCLUDE_DIRS}
