@@ -1,16 +1,17 @@
 #! /usr/bin/env python
 from setuptools import setup, Extension
-from io import open
 import subprocess
-from os import path
 import os
 import sys
 from setuptools.command.build_ext import build_ext
+
 
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=''):
         Extension.__init__(self, name, sources=[])
         self.sourcedir = os.path.abspath(sourcedir)
+
+
 class CMakeBuild(build_ext):
     def run(self):
         try:
@@ -46,6 +47,7 @@ class CMakeBuild(build_ext):
         subprocess.check_call(['cmake', '--build', '.'] + build_args,
                               cwd=self.build_temp)
 
+
 setup(name='lanelet2',
       version='1.1.1',
       description='A standalone python module for the lanelet2 library.',
@@ -59,7 +61,7 @@ setup(name='lanelet2',
       ],
       license='BSD 3-Clause',
       packages=['lanelet2'],
-      package_dir={'lanelet2':'pylanelet2/lanelet2'},
+      package_dir={'lanelet2': 'pylanelet2/lanelet2'},
       ext_modules=[CMakeExtension('lanelet2')],
       cmdclass=dict(build_ext=CMakeBuild),
-      zip_safe=False,)
+      zip_safe=False, )
