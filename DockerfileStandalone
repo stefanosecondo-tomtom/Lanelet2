@@ -8,10 +8,9 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 
 
 RUN add-apt-repository ppa:deadsnakes/ppa -y
+RUN apt install python3.9 python3.9-dev python3-setuptools python3-pip -y
 
-RUN apt install python3.9 python3.9-dev python3-setuptools -y
-
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
         libboost-all-dev \
         libeigen3-dev \
         libgeographic-dev \
@@ -22,5 +21,30 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 COPY . /workspace
 WORKDIR /workspace
 
-# RUN mkdir cmake-build-release && cd cmake-build-release && cmake .. -DCMAKE_BUILD_TYPE=Release
-RUN python3.9 setup.py install
+RUN python3.9 -m pip install wheel
+RUN python3.9 setup.py bdist_wheel
+
+##########################################################
+#   FINAL IMAGE
+##########################################################
+FROM  ubuntu:20.04 as app
+
+COPY --from=lanelet2_deps /workspace/dist /workspace
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+            software-properties-common
+
+RUN add-apt-repository ppa:deadsnakes/ppa -y
+RUN apt install python3.9 python3.9-dev python3-setuptools python3-pip -y
+
+WORKDIR /workspace
+
+RUN python3.9 -m pip install lanelet2-1.1.1-cp39-cp39-linux_x86_64.whl
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        libboost-all-dev \
+        libeigen3-dev \
+        libgeographic-dev \
+        libpugixml-dev \
+        libboost-python-dev \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
