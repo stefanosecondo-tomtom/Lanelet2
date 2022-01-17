@@ -24,8 +24,7 @@ include_directories(
         ${Boost_INCLUDE_DIRS}
         ${PYTHON_INCLUDE_DIRS}
         ${EIGEN3_INCLUDE_DIR}
-        ${GeographicLib_INCLUDE_DIRS}
-        ${PugiXML_INCLUDE_DIRS})
+        ${GeographicLib_INCLUDE_DIRS})
 
 include_directories(
         lanelet2_core/include
@@ -43,8 +42,7 @@ target_link_libraries(lanelet2_core
         ${Boost_LIBRARIES}
         ${PYTHON_LIBRARY}
         ${GeographicLib_LIBRARIES}
-        ${PugiXML_LIBRARIES}
-        )
+        pugixml)
 
 file(GLOB IOSRCS lanelet2_io/src/*.cpp)
 add_library(lanelet2_io SHARED ${IOSRCS})
@@ -52,7 +50,7 @@ target_link_libraries(lanelet2_io
         ${Boost_LIBRARIES}
         ${PYTHON_LIBRARY}
         ${GeographicLib_LIBRARIES}
-        ${PugiXML_LIBRARIES}
+        pugixml
         lanelet2_core)
 
 file(GLOB PRJSRCS lanelet2_projection/src/*.cpp)
@@ -61,7 +59,7 @@ target_link_libraries(lanelet2_projection
         ${Boost_LIBRARIES}
         ${PYTHON_LIBRARY}
         ${GeographicLib_LIBRARIES}
-        ${PugiXML_LIBRARIES}
+        pugixml
         lanelet2_core)
 
 file(GLOB RULESSRCS lanelet2_traffic_rules/src/*.cpp)
@@ -70,7 +68,7 @@ target_link_libraries(lanelet2_traffic_rules
         ${Boost_LIBRARIES}
         ${PYTHON_LIBRARY}
         ${GeographicLib_LIBRARIES}
-        ${PugiXML_LIBRARIES}
+        pugixml
         lanelet2_core)
 
 file(GLOB ROUTESRCS lanelet2_routing/src/*.cpp)
@@ -79,7 +77,7 @@ target_link_libraries(lanelet2_routing
         ${Boost_LIBRARIES}
         ${PYTHON_LIBRARY}
         ${GeographicLib_LIBRARIES}
-        ${PugiXML_LIBRARIES}
+        pugixml
         lanelet2_core
         lanelet2_traffic_rules)
 
@@ -89,7 +87,7 @@ target_link_libraries(lanelet2_validation
         ${Boost_LIBRARIES}
         ${PYTHON_LIBRARY}
         ${GeographicLib_LIBRARIES}
-        ${PugiXML_LIBRARIES}
+        pugixml
         lanelet2_core lanelet2_io lanelet2_routing lanelet2_traffic_rules lanelet2_projection)
 
 
@@ -99,7 +97,7 @@ target_link_libraries(lanelet2_matching
         ${Boost_LIBRARIES}
         ${PYTHON_LIBRARY}
         ${GeographicLib_LIBRARIES}
-        ${PugiXML_LIBRARIES})
+        pugixml)
 target_include_directories(lanelet2_matching PRIVATE lanelet2_matching/include/lanelet2_matching)
 
 
