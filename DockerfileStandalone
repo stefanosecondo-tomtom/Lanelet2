@@ -1,4 +1,4 @@
-FROM ubuntu:20.04 AS lanelet2_deps
+FROM ubuntu:18.04 AS lanelet2_deps
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
             build-essential \
@@ -8,7 +8,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 
 
 RUN add-apt-repository ppa:deadsnakes/ppa -y
-RUN apt install python3.9 python3.9-dev python3-setuptools python3-pip -y
+RUN DEBIAN_FRONTEND=noninteractive apt install python3.9 python3.9-dev python3-setuptools python3-pip python3.9-distutils -y
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
         libboost-all-dev \
@@ -21,19 +21,21 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
 COPY . /workspace
 WORKDIR /workspace
 
+RUN python3.9 -m pip install --upgrade pip
+RUN python3.9  -m pip install --upgrade setuptools
 RUN python3.9 -m pip install wheel
 RUN python3.9 setup.py bdist_wheel
 
 ##########################################################
 #   FINAL IMAGE
 ##########################################################
-FROM  ubuntu:20.04 as app
+FROM  ubuntu:18.04 as app
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
             software-properties-common
 
 RUN add-apt-repository ppa:deadsnakes/ppa -y
-RUN apt install python3.9 python3.9-dev python3-setuptools python3-pip -y
+RUN DEBIAN_FRONTEND=noninteractive apt install python3.9 python3.9-dev python3-setuptools python3-pip python3.9-distutils -y
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
         libboost-all-dev \
@@ -46,4 +48,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
 COPY --from=lanelet2_deps /workspace/dist /workspace
 WORKDIR /workspace
 
+RUN python3.9 -m pip install --upgrade pip
+RUN python3.9  -m pip install --upgrade setuptools
 RUN python3.9 -m pip install lanelet2-1.1.1-cp39-cp39-linux_x86_64.whl

@@ -18,7 +18,7 @@ if(NOT EIGEN3_FOUND)
     set(EIGEN3_INCLUDE_DIR ${EIGEN3_INCLUDE_DIRS})
 endif()
 find_package(GeographicLib REQUIRED)
-find_package(pugixml REQUIRED)
+find_package(PugiXML REQUIRED)
 
 include_directories(
         ${Boost_INCLUDE_DIRS}
